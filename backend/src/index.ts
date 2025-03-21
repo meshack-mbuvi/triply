@@ -1,17 +1,20 @@
-import { pool } from "./database";
+import "reflect-metadata";
+
+import { AppDataSource } from "./data-source";
 import { createApp } from "./lib/app";
 
 const port = process.env.PORT || 8000;
 
 const app = createApp();
 
-app.listen(port, () => {
-  pool.query(`SELECT * FROM users`, (err: any, results: any) => {
-    if (err) {
-      console.log({ err });
-    } else {
-      console.log({ results });
-    }
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Connected to database");
+
+    app.listen(port, () => {
+      console.log(`Server is Fire at https://localhost:${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Database connection failed");
   });
-  console.log(`Server is Fire at https://localhost:${port}`);
-});
