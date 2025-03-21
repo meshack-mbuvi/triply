@@ -1,8 +1,9 @@
+// import routes from "@/src/routes";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { Application, NextFunction, Request, Response } from "express";
-// import routes from './routes'
+import routes from "../routes";
 
 dotenv.config();
 
@@ -17,11 +18,12 @@ export function createApp() {
     })
   );
   app.use(cors());
-  // app.use('/api', routes)
+  app.use("/api", routes);
 
   app.get("/", (_req: Request, res: Response) => {
     res.send({
       message: "Welcome to Triply!",
+      docs: "/api-docs/",
     });
   });
 
