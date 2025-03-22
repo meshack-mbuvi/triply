@@ -34,6 +34,29 @@ const swaggerDefinition = {
           },
         },
       },
+
+      Trip: {
+        type: "object",
+        properties: {
+          id: { type: "integer", example: 1 },
+          title: { type: "string", example: "Beach Vacation" },
+          description: {
+            type: "string",
+            example: "A relaxing trip to the Maldives.",
+          },
+          origin: { type: "string", example: "New York" },
+          destination: { type: "string", example: "Maldives" },
+          startDate: { type: "string", format: "date", example: "2025-06-01" },
+          endDate: { type: "string", format: "date", example: "2025-06-10" },
+          price: { type: "number", example: 1500.0 },
+          createdAt: {
+            type: "string",
+            format: "date-time",
+            example: "2025-03-22T12:00:00Z",
+          },
+          user: { $ref: "#/components/schemas/User" }, // Link trip to a user
+        },
+      },
     },
   },
 };

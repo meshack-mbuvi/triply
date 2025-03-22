@@ -1,5 +1,5 @@
-import { AppDataSource } from "@/data-source"; // Import configured database connection
-import { User } from "@/entities/user"; // Import User entity for database operations
+import { AppDataSource } from "@/config/data-source"; // Import configured database connection
+import { UserEntity } from "@/entities/user.entity"; // Import User entity for database operations
 import bcrypt from "bcryptjs"; // Library for hashing passwords
 import dotenv from "dotenv"; // Load environment variables from .env file
 import { Request, Response } from "express"; // Import Express types for request and response handling
@@ -24,7 +24,7 @@ export class UserController {
       }
 
       // Get user repository from TypeORM data source
-      const userRepository = AppDataSource.getRepository(User);
+      const userRepository = AppDataSource.getRepository(UserEntity);
 
       // Check if a user with the provided email already exists
       const existingUser = await userRepository.findOne({ where: { email } });
@@ -69,7 +69,7 @@ export class UserController {
       }
 
       // Retrieve user from the database
-      const userRepository = AppDataSource.getRepository(User);
+      const userRepository = AppDataSource.getRepository(UserEntity);
       const user = await userRepository.findOne({ where: { email } });
 
       if (!user) {
@@ -87,7 +87,7 @@ export class UserController {
       // Generate JWT token
       const secretKey = process.env.SECRET_KEY || "This is secret";
       const token = `Bearer ${jwt.sign(
-        { user_id: user.id, email: user.email },
+        { id: user.id, email: user.email },
         secretKey
       )}`;
 
@@ -121,7 +121,7 @@ export class UserController {
           .json({ message: "Full name or password is required" });
       }
 
-      const userRepository = AppDataSource.getRepository(User);
+      const userRepository = AppDataSource.getRepository(UserEntity);
 
       // Find user by email
       const existingUser = await userRepository.findOne({
@@ -132,7 +132,7 @@ export class UserController {
       }
 
       // Prepare updated data
-      const updatedData: Partial<User> = {};
+      const updatedData: Partial<UserEntity> = {};
       if (fullName?.trim()) updatedData.fullName = fullName.trim();
       if (password?.trim())
         updatedData.password = bcrypt.hashSync(password.trim(), 10);

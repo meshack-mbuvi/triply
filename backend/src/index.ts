@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { AppDataSource } from "./data-source";
+import { AppDataSource } from "./config/data-source";
 import { createApp } from "./lib/app";
 
 const port = process.env.PORT || 8000;
@@ -16,5 +16,5 @@ AppDataSource.initialize()
     });
   })
   .catch((error) => {
-    console.error("Database connection failed");
+    console.error("Database connection failed", error);
   });

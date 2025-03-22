@@ -142,7 +142,7 @@
  *     tags: [Users]
  *     description: Allows authenticated users to update their full name and/or password.
  *     security:
- *       - BearerAuth: []  # 👈 Requires authentication for this route
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
