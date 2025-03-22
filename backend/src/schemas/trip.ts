@@ -19,3 +19,18 @@ export const tripSchema = yup.object({
     .positive("Price must be a positive number")
     .min(1, "Price must be at least 1"),
 });
+
+export const updateTripSchema = yup.object({
+  title: yup.string().max(100, "Title too long"),
+  description: yup.string(),
+  origin: yup.string(),
+  destination: yup.string(),
+  startDate: yup.date().min(new Date(), "Start date cannot be in the past"),
+  endDate: yup
+    .date()
+    .min(yup.ref("startDate"), "End date must be after start date"),
+  price: yup
+    .number()
+    .positive("Price must be a positive number")
+    .min(1, "Price must be at least 1"),
+});

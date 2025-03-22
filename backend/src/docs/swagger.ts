@@ -63,7 +63,7 @@ const swaggerDefinition = {
 
 const options = {
   definition: swaggerDefinition,
-  apis: ["./src/docs/routes/*.ts"], // Separate API route documentation
+  apis: ["./src/docs/routes/**/*.ts"], // Separate API route documentation
 };
 
 export const swaggerSpec = swaggerJSDoc(options);
