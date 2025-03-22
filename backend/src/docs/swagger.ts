@@ -9,6 +9,13 @@ const swaggerDefinition = {
   },
   servers: [{ url: "http://localhost:8000" }],
   components: {
+    securitySchemes: {
+      BearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
     schemas: {
       User: {
         type: "object",

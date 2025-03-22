@@ -86,7 +86,10 @@ export class UserController {
 
       // Generate JWT token
       const secretKey = process.env.SECRET_KEY || "This is secret";
-      const token = `Bearer ${jwt.sign({ user_id: user.id }, secretKey)}`;
+      const token = `Bearer ${jwt.sign(
+        { user_id: user.id, email: user.email },
+        secretKey
+      )}`;
 
       // Remove sensitive user information
       const { password: _, ...userData } = user;
@@ -97,6 +100,64 @@ export class UserController {
       return res
         .status(500)
         .json({ message: "Server error", error: (error as Error).message });
+    }
+  }
+
+  /**
+   * Updates the authenticated user's profile (full name & password).
+   *
+   * @param {Request} req - Express request object.
+   * @param {Response} res - Express response object.
+   * @returns {Promise<Response>} - JSON response with status and user data.
+   */
+  static async profile(req: Request, res: Response): Promise<Response> {
+    try {
+      const { password, fullName, user } = req.body;
+
+      // Ensure at least one field is provided
+      if (!fullName && !password) {
+        return res
+          .status(400)
+          .json({ message: "Full name or password is required" });
+      }
+
+      const userRepository = AppDataSource.getRepository(User);
+
+      // Find user by email
+      const existingUser = await userRepository.findOne({
+        where: { email: user.email },
+      });
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Prepare updated data
+      const updatedData: Partial<User> = {};
+      if (fullName?.trim()) updatedData.fullName = fullName.trim();
+      if (password?.trim())
+        updatedData.password = bcrypt.hashSync(password.trim(), 10);
+
+      // Update user details
+      await userRepository.update({ email: user.email }, updatedData);
+
+      // Fetch updated user details
+      const updatedUser = await userRepository.findOne({
+        where: { email: user.email },
+      });
+
+      // Remove password before responding
+      if (updatedUser) {
+        const { password, ...userWithoutPassword } = updatedUser;
+        return res.status(200).json({
+          message: "User updated successfully",
+          user: userWithoutPassword,
+        });
+      }
+
+      return res.status(500).json({ message: "Failed to update user" });
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return res.status(500).json({ message: "Internal server error" });
     }
   }
 }
