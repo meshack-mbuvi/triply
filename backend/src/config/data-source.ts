@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
-import { User } from "./entities/user"; // Importing the User entity
+import { Trip } from "../entities/trip.entity";
+import { UserEntity } from "../entities/user.entity"; // Importing the User entity
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -20,7 +21,7 @@ export const AppDataSource = new DataSource({
   synchronize: true, // Auto-syncs schema; set to false in production to avoid data loss
   logging: true, // Enables SQL query logging (set to false in production)
 
-  entities: [User], // Specifies entity files to be used by TypeORM
+  entities: [UserEntity, Trip], // Specifies entity files to be used by TypeORM
   migrations: ["@/migrations/*.ts"], // Path to migration files (Adjust as needed)
   subscribers: [], // No subscribers defined for now
 });
