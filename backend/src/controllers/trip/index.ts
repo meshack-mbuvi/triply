@@ -168,4 +168,34 @@ export class TripController {
       });
     }
   }
+
+  static async deleteTrip(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { user } = req.body;
+      const tripRepository = AppDataSource.getRepository(Trip);
+
+      // Find the trip
+      const trip = await tripRepository.findOne({
+        where: {
+          id: parseInt(id, 10),
+          user: { id: user.id }, // can only delete a trip you own
+        },
+      });
+
+      if (!trip) {
+        return res.status(404).json({ message: "Trip not found" });
+      }
+
+      // Delete the trip
+      await tripRepository.remove(trip);
+
+      return res.status(200).json({
+        message: "Trip deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error deleting trip:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
