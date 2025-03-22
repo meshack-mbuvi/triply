@@ -87,7 +87,7 @@ export class UserController {
       // Generate JWT token
       const secretKey = process.env.SECRET_KEY || "This is secret";
       const token = `Bearer ${jwt.sign(
-        { id: user.id, email: user.email },
+        { id: user.id, email: user.email, fullName: user.fullName },
         secretKey
       )}`;
 

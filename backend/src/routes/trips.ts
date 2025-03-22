@@ -7,5 +7,6 @@ import { asyncHandler } from "./utils";
 const router: Router = Router();
 
 router.post("/", validate(tripSchema), asyncHandler(TripController.createTrip));
+router.get("/", asyncHandler(TripController.getTrips));
 
 export default router;

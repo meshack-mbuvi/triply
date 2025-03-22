@@ -12,10 +12,10 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column()
   fullName: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column()
   password: string;
 
   @Column({ type: "varchar", unique: true })
