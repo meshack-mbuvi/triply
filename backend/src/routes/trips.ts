@@ -14,5 +14,6 @@ router.patch(
   validate(updateTripSchema),
   asyncHandler(TripController.editTrip)
 );
+router.delete("/:id", asyncHandler(TripController.deleteTrip));
 
 export default router;
