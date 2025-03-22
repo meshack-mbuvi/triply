@@ -198,4 +198,81 @@ export class TripController {
       return res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  static async filterTrips(req: Request, res: Response) {
+    try {
+      const {
+        origin,
+        destination,
+        startDate,
+        endDate,
+        minPrice,
+        maxPrice,
+        page = 1,
+        limit = 10,
+      } = req.query;
+
+      const tripRepository = AppDataSource.getRepository(Trip);
+      let queryBuilder = tripRepository.createQueryBuilder("trip");
+
+      // Apply filters only if parameters exist
+      if (origin) {
+        queryBuilder = queryBuilder.andWhere(
+          "LOWER(trip.origin) LIKE LOWER(:origin)",
+          { origin: `%${origin}%` }
+        );
+      }
+
+      if (destination) {
+        queryBuilder = queryBuilder.andWhere(
+          "LOWER(trip.destination) LIKE LOWER(:destination)",
+          { destination: `%${destination}%` }
+        );
+      }
+
+      if (startDate) {
+        queryBuilder = queryBuilder.andWhere("trip.startDate >= :startDate", {
+          startDate,
+        });
+      }
+
+      if (endDate) {
+        queryBuilder = queryBuilder.andWhere("trip.endDate <= :endDate", {
+          endDate,
+        });
+      }
+
+      if (minPrice) {
+        queryBuilder = queryBuilder.andWhere("trip.price >= :minPrice", {
+          minPrice: Number(minPrice),
+        });
+      }
+
+      if (maxPrice) {
+        queryBuilder = queryBuilder.andWhere("trip.price <= :maxPrice", {
+          maxPrice: Number(maxPrice),
+        });
+      }
+
+      // Pagination
+      const take = parseInt(limit as string, 10);
+      const skip = (parseInt(page as string, 10) - 1) * take;
+
+      const [trips, total] = await queryBuilder
+        .orderBy("trip.createdAt", "DESC")
+        .take(take)
+        .skip(skip)
+        .getManyAndCount();
+
+      return res.status(200).json({
+        trips,
+        total,
+        page: parseInt(page as string, 10),
+        totalPages: Math.ceil(total / take),
+      });
+    } catch (error) {
+      console.error("Error filtering trips:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
