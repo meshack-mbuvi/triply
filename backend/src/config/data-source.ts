@@ -19,8 +19,7 @@ export const AppDataSource = new DataSource({
   database: dbName, // Database name
 
   synchronize: true, // Auto-syncs schema; set to false in production to avoid data loss
-  logging: true, // Enables SQL query logging (set to false in production)
-
+  logging: false,
   entities: [UserEntity, Trip], // Specifies entity files to be used by TypeORM
   migrations: ["@/migrations/*.ts"], // Path to migration files (Adjust as needed)
   subscribers: [], // No subscribers defined for now
