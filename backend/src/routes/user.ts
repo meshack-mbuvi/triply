@@ -13,6 +13,6 @@ router.post(
   asyncHandler(UserController.signup)
 );
 router.post("/login", asyncHandler(UserController.login));
-router.put("/profile", auth, asyncHandler(UserController.profile));
+router.patch("/profile", auth, asyncHandler(UserController.profile));
 
 export default router;
