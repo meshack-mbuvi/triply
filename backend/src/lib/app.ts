@@ -26,7 +26,7 @@ export function createApp() {
   app.use("/api", routes);
 
   app.get("/", (_req: Request, res: Response) => {
-    res.send({
+    res.json({
       message: "Welcome to Triply!",
       docs: "/api-docs/",
     });

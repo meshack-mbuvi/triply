@@ -212,8 +212,13 @@ export class TripController {
         limit = 10,
       } = req.query;
 
+      const { user } = req.body;
+
       const tripRepository = AppDataSource.getRepository(Trip);
       let queryBuilder = tripRepository.createQueryBuilder("trip");
+      queryBuilder.andWhere({
+        user: { id: user.id },
+      });
 
       // Apply filters only if parameters exist
       if (origin) {
