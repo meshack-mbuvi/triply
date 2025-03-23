@@ -44,7 +44,6 @@ const swaggerDefinition = {
             type: "string",
             example: "A relaxing trip to the Maldives.",
           },
-          origin: { type: "string", example: "New York" },
           destination: { type: "string", example: "Maldives" },
           startDate: { type: "string", format: "date", example: "2025-06-01" },
           endDate: { type: "string", format: "date", example: "2025-06-10" },

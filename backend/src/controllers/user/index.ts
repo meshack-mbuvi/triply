@@ -29,7 +29,7 @@ export class UserController {
       // Check if a user with the provided email already exists
       const existingUser = await userRepository.findOne({ where: { email } });
       if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(409).json({ message: "User already exists" });
       }
 
       // Hash password before storing it in the database
@@ -45,8 +45,23 @@ export class UserController {
       // Save the user to the database
       await userRepository.save(user);
 
+      // Generate JWT token
+      const secretKey = process.env.SECRET_KEY || "This is secret";
+      const token = `Bearer ${jwt.sign(
+        { id: user.id, email: user.email, fullName: user.fullName },
+        secretKey
+      )}`;
+
+      const { password: _, ...userData } = user;
+
       // Respond with success message
-      res.status(201).json({ message: "User registered successfully", user });
+      res.status(201).json({
+        message: "User registered successfully",
+        user: {
+          ...userData,
+          token,
+        },
+      });
     } catch (error) {
       console.error("Error during user signup:", error);
       res.status(500).json({ message: "Server error" });

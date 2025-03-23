@@ -20,9 +20,6 @@ export class Trip {
   description: string;
 
   @Column({ type: "varchar", length: 255 })
-  origin: string;
-
-  @Column({ type: "varchar", length: 255 })
   destination: string;
 
   @Column({ type: "date" })

@@ -27,9 +27,6 @@
  *               description:
  *                 type: string
  *                 example: "A more relaxing trip to the Maldives."
- *               origin:
- *                 type: string
- *                 example: "Los Angeles"
  *               destination:
  *                 type: string
  *                 example: "Maldives"

@@ -8,7 +8,6 @@ export class TripController {
       const {
         title,
         description,
-        origin,
         destination,
         startDate,
         endDate,
@@ -19,7 +18,6 @@ export class TripController {
       if (
         !title ||
         !description ||
-        !origin ||
         !destination ||
         !startDate ||
         !endDate ||
@@ -33,7 +31,6 @@ export class TripController {
       const newTrip = tripRepository.create({
         title,
         description,
-        origin,
         destination,
         startDate,
         endDate,
@@ -107,7 +104,6 @@ export class TripController {
       const {
         title,
         description,
-        origin,
         destination,
         startDate,
         endDate,
@@ -145,8 +141,6 @@ export class TripController {
         description && description.trim() !== ""
           ? description.trim()
           : trip.description;
-      trip.origin =
-        origin && origin.trim() !== "" ? origin.trim() : trip.origin;
       trip.destination =
         destination && destination.trim() !== ""
           ? destination.trim()
@@ -202,7 +196,6 @@ export class TripController {
   static async filterTrips(req: Request, res: Response) {
     try {
       const {
-        origin,
         destination,
         startDate,
         endDate,
@@ -221,13 +214,6 @@ export class TripController {
       });
 
       // Apply filters only if parameters exist
-      if (origin) {
-        queryBuilder = queryBuilder.andWhere(
-          "LOWER(trip.origin) LIKE LOWER(:origin)",
-          { origin: `%${origin}%` }
-        );
-      }
-
       if (destination) {
         queryBuilder = queryBuilder.andWhere(
           "LOWER(trip.destination) LIKE LOWER(:destination)",

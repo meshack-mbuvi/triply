@@ -6,14 +6,8 @@
  *     tags: [Trips]
  *     security:
  *       - BearerAuth: []
- *     description: Retrieve trips based on filters such as origin, destination, start date, end date, and price range.
+ *     description: Retrieve trips based on filters such as destination, start date, end date, and price range.
  *     parameters:
- *       - in: query
- *         name: origin
- *         schema:
- *           type: string
- *         description: Filter trips by origin (case insensitive)
- *         example: "New York"
  *       - in: query
  *         name: destination
  *         schema:
