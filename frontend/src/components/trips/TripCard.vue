@@ -1,5 +1,7 @@
 <template>
-  <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+  <div
+    class="max-w-3xl h-fit mx-auto bg-white shadow-lg rounded-lg overflow-hidden"
+  >
     <div class="p-6">
       <h2 class="text-2xl font-bold text-gray-800">{{ trip.title }}</h2>
       <p class="text-gray-500 mt-2">{{ trip.description }}</p>
@@ -7,11 +9,11 @@
         <p class="text-lg font-semibold text-blue-600">
           {{ trip.destination }}
         </p>
-        <p class="text-sm text-gray-600">
-          <span class="font-medium">Start:</span>
-          {{ formatDate(trip.startDate) }}
-          |
-          <span class="font-medium">End:</span> {{ formatDate(trip.endDate) }}
+        <p class="flex flex-col text-sm text-gray-600">
+          <span class="font-medium"
+            >{{ formatDate(trip.startDate) }} -
+            {{ formatDate(trip.endDate) }}</span
+          >
         </p>
         <p class="text-xl font-bold text-green-600 mt-2">${{ trip.price }}</p>
       </div>

@@ -6,38 +6,51 @@ import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-
 const { user } = useAuthStore();
 const isOpen = ref(false);
+
 const handleLogOut = () => {
-  // Just clear local storage for now
   localStorage.setItem("user", null);
-  // redirect to login
   router.push("/login");
 };
 </script>
 
 <template>
-  <nav class="bg-gray-100 border-b border-gray-200 shadow-md w-full p-3">
-    <div class="container mx-auto flex items-center justify-between py-4 px-6">
-      <!-- Logo -->
+  <nav class="bg-white border-b border-gray-200 shadow-md w-full p-4">
+    <div class="container mx-auto flex items-center justify-between">
       <a href="/" class="text-xl font-bold text-gray-800">
-        Triply<span class="text-blue-500">X</span>
+        Triply<span class="text-red-500 text-2xl italic">CO</span>
       </a>
 
-      <!-- User Profile or Login Buttons -->
-      <div class="hidden md:flex space-x-4">
+      <div class="hidden md:flex space-x-4 items-center">
         <template v-if="user.fullName">
           <div class="relative">
             <button
               @click="isOpen = !isOpen"
-              class="flex text-lg focus:outline-none"
+              class="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg text-lg font-medium text-gray-800 hover:bg-gray-200 transition"
             >
-              <User class="w-6 h-6 mr-2" /> {{ user.fullName }}
+              <User class="w-6 h-6 text-gray-600" />
+              <span>{{ user.fullName }}</span>
+              <svg
+                class="w-4 h-4 text-gray-600 transform transition-transform"
+                :class="{ 'rotate-180': isOpen }"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
             </button>
+
             <div
               v-if="isOpen"
-              class="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-lg"
+              class="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-md p-1"
             >
               <a
                 href="#"
@@ -45,51 +58,40 @@ const handleLogOut = () => {
               >
                 <User class="w-4 h-4 mr-2" /> Profile
               </a>
-              <a
-                href="#"
-                class="block px-4 py-2 text-red-500 hover:bg-gray-100 flex items-center"
+              <button
                 @click="handleLogOut"
+                class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 flex items-center"
               >
                 <LogOut class="w-4 h-4 mr-2" /> Logout
-              </a>
+              </button>
             </div>
           </div>
         </template>
         <template v-else>
-          <router-link to="/login"
-            ><button
-              class="border cursor-pointer border-gray-300 px-4 py-2 rounded-lg"
-            >
-              Log In
-            </button>
-          </router-link>
-
-          <router-link to="/signup"
-            ><button
-              class="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-lg"
-            >
-              Sign Up
-            </button>
-          </router-link>
+          <router-link
+            to="/login"
+            class="border border-gray-300 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
+            >Log In</router-link
+          >
+          <router-link
+            to="/signup"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >Sign Up</router-link
+          >
         </template>
       </div>
 
-      <!-- Mobile Menu Button -->
       <button class="md:hidden" @click="isOpen = !isOpen">
         <Menu v-if="!isOpen" size="24" />
         <X v-else size="24" />
       </button>
     </div>
 
-    <!-- Mobile Menu -->
-    <div v-if="isOpen" class="md:hidden bg-white shadow-md border-t">
-      <ul class="flex flex-col space-y-4 p-4 text-gray-700">
+    <div v-if="isOpen" class="md:hidden bg-white shadow-md border-t p-4">
+      <ul class="flex flex-col space-y-4">
         <template v-if="user.fullName">
-          <li class="mt-4 flex items-center space-x-2">
-            <!-- <img :src="user.avatar" class="w-10 h-10 rounded-full" /> -->
-            <span class="text-gray-800 font-semibold underline">{{
-              user.fullName
-            }}</span>
+          <li>
+            <span class="text-gray-800 font-semibold">{{ user.fullName }}</span>
           </li>
           <li>
             <a href="#" class="block hover:text-blue-500 flex items-center">
@@ -97,33 +99,28 @@ const handleLogOut = () => {
             </a>
           </li>
           <li>
-            <a
-              href="#"
-              class="block text-red-500 hover:text-red-600 flex items-center"
+            <button
               @click="handleLogOut"
+              class="block text-red-500 hover:text-red-600 flex items-center"
             >
               <LogOut class="w-4 h-4 mr-2" /> Logout
-            </a>
+            </button>
           </li>
         </template>
         <template v-else>
-          <li class="mt-4">
-            <router-link to="/login"
-              ><button
-                class="border cursor-pointer border-gray-300 px-4 py-2 rounded-lg"
-              >
-                Log In
-              </button>
-            </router-link>
+          <li>
+            <router-link
+              to="/login"
+              class="border border-gray-300 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
+              >Log In</router-link
+            >
           </li>
           <li>
-            <router-link to="/signup"
-              ><button
-                class="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-lg"
-              >
-                Sign Up
-              </button>
-            </router-link>
+            <router-link
+              to="/signup"
+              class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              >Sign Up</router-link
+            >
           </li>
         </template>
       </ul>
