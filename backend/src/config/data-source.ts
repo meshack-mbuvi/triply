@@ -5,18 +5,11 @@ import { UserEntity } from "../entities/user.entity"; // Importing the User enti
 
 dotenv.config(); // Load environment variables from .env file
 
-// Retrieve database credentials from environment variables
-const dbName = process.env.DATABASE_NAME;
-const dbUserName = process.env.DATABASE_USER;
-const dbPassword = process.env.DATABASE_PASSWORD;
+const URL = process.env.DATABASE_URL;
 
 export const AppDataSource = new DataSource({
   type: "postgres", // Database type (Change to "mysql" or "sqlite" if needed)
-  host: "localhost", // Database host (Change if using a remote DB)
-  port: 5432, // Database port (Ensure it matches your DB setup)
-  username: dbUserName, // Database username
-  password: dbPassword, // Database password
-  database: dbName, // Database name
+  url: URL,
 
   synchronize: true, // Auto-syncs schema; set to false in production to avoid data loss
   logging: false,
