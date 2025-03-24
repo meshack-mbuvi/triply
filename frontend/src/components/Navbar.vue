@@ -1,12 +1,20 @@
 <script setup>
-import { LogOut, Menu, Settings, User, X } from "lucide-vue-next";
+import { LogOut, Menu, User, X } from "lucide-vue-next";
 import { ref } from "vue";
 
 import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const { user } = useAuthStore();
 const isOpen = ref(false);
-const isLoggedIn = ref(true); // Change based on auth state
+const handleLogOut = () => {
+  // Just clear local storage for now
+  localStorage.setItem("user", null);
+  // redirect to login
+  router.push("/login");
+};
 </script>
 
 <template>
@@ -40,20 +48,29 @@ const isLoggedIn = ref(true); // Change based on auth state
               <a
                 href="#"
                 class="block px-4 py-2 text-red-500 hover:bg-gray-100 flex items-center"
-                @click="isLoggedIn = false"
+                @click="handleLogOut"
               >
-                <!-- <LogOut class="w-4 h-4 mr-2" /> Logout -->
+                <LogOut class="w-4 h-4 mr-2" /> Logout
               </a>
             </div>
           </div>
         </template>
         <template v-else>
-          <button class="border border-gray-300 px-4 py-2 rounded-lg">
-            Log In
-          </button>
-          <button class="bg-blue-500 text-white px-4 py-2 rounded-lg">
-            Sign Up
-          </button>
+          <router-link to="/login"
+            ><button
+              class="border cursor-pointer border-gray-300 px-4 py-2 rounded-lg"
+            >
+              Log In
+            </button>
+          </router-link>
+
+          <router-link to="/signup"
+            ><button
+              class="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-lg"
+            >
+              Sign Up
+            </button>
+          </router-link>
         </template>
       </div>
 
@@ -83,7 +100,7 @@ const isLoggedIn = ref(true); // Change based on auth state
             <a
               href="#"
               class="block text-red-500 hover:text-red-600 flex items-center"
-              @click="isLoggedIn = false"
+              @click="handleLogOut"
             >
               <LogOut class="w-4 h-4 mr-2" /> Logout
             </a>
@@ -91,14 +108,22 @@ const isLoggedIn = ref(true); // Change based on auth state
         </template>
         <template v-else>
           <li class="mt-4">
-            <button class="w-full border border-gray-300 px-4 py-2 rounded-lg">
-              Log In
-            </button>
+            <router-link to="/login"
+              ><button
+                class="border cursor-pointer border-gray-300 px-4 py-2 rounded-lg"
+              >
+                Log In
+              </button>
+            </router-link>
           </li>
           <li>
-            <button class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg">
-              Sign Up
-            </button>
+            <router-link to="/signup"
+              ><button
+                class="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-lg"
+              >
+                Sign Up
+              </button>
+            </router-link>
           </li>
         </template>
       </ul>

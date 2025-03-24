@@ -1,13 +1,21 @@
 <script setup>
 import AuthForm from "@/components/AuthForm.vue";
 import { useAuthStore } from "@/stores/authStore";
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 
 const { saveUser } = useAuthStore();
 const router = useRouter();
 
 const error = reactive({});
+
+onMounted(() => {
+  // Redirect to home view if their is a token
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user.token) {
+    router.push("/");
+  }
+});
 
 const handleLogin = async (userData) => {
   try {
@@ -37,7 +45,7 @@ const handleLogin = async (userData) => {
     const data = await response.json();
     saveUser(data);
 
-    router.push("/");
+    router.go("/");
 
     return data;
   } catch (err) {
@@ -58,7 +66,7 @@ const handleLogin = async (userData) => {
   <div
     class="flex items-center align-middle text-black justify-center h-screen bg-ray-500"
   >
-    <div class="flex flex-col items-center justify-center w-1/2">
+    <div class="flex flex-col items-center justify-center w-full md:w-1/2">
       <p v-if="error.message" class="text-red-500">{{ error.message }}</p>
       <div v-if="error.errors">
         <p v-for="error in error.errors" class="text-red-500">{{ error }}</p>
