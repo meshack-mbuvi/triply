@@ -1,9 +1,7 @@
 <template>
-  <div class="flex flex-col items-center min-h-screen">
-    <Navbar />
-
+  <div class="">
     <div
-      class="flex flex-wrap items-center border-b border-gray-300 justify-between w-full p-4 my-8 mb-4 gap-4 sm:flex-row"
+      class="flex flex-wrap items-center border-b border-gray-300 justify-between w-full p-4 gap-4 sm:flex-row"
     >
       <!-- Filter section -->
       <FilterTrip class="w-full sm:w-auto" />
@@ -17,7 +15,7 @@
       </button>
     </div>
 
-    <!-- List Tripes -->
+    <!-- List Trips -->
     <TripGrid />
 
     <!-- Modal to add new trip -->
@@ -29,7 +27,6 @@
 
 <script setup>
 import ModalWindow from "@/components/modal/ModalWindow.vue";
-import Navbar from "@/components/Navbar.vue";
 import FilterTrip from "@/components/trips/FilterTrip.vue";
 import TripForm from "@/components/trips/TripForm.vue";
 import TripGrid from "@/components/trips/TripGrid.vue";

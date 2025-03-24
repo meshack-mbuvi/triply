@@ -5,71 +5,80 @@ import { reactive } from "vue";
 import { useRouter } from "vue-router";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-
 const { saveUser } = useAuthStore();
-
 const router = useRouter();
-const error = reactive({});
+
+const error = reactive({
+  message: "",
+  errors: [],
+});
 
 const handleSignup = async (userData) => {
   try {
+    error.message = "";
+    error.errors = [];
+
     const response = await fetch(`${BASE_URL}/api/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(userData), // Convert JS object to JSON
+      body: JSON.stringify(userData),
     });
 
     if (!response.ok) {
-      const errorResponse = await response.json(); // Get error details
-      Object.assign(error, {
-        message: errorResponse.message || "Signup failed",
-        errors: errorResponse.errors,
-      });
-      throw new Error(errorResponse.message);
+      const errorResponse = await response.json();
+      error.message = errorResponse.message || "Signup failed";
+      error.errors = Array.isArray(errorResponse.errors)
+        ? errorResponse.errors
+        : [];
+      return;
     }
 
-    const data = await response.json(); // Parse JSON response
+    const data = await response.json();
     saveUser(data.user);
-
-    // Redirect to home after signup
     router.push("/");
-
-    return data; // Return response data for further processing
-  } catch (error) {
-    console.log("Signup failed:", { error });
-    Object.assign(error, { message: error.message });
-
-    // Reset error
+  } catch (err) {
+    error.message = "Something went wrong. Please try again.";
+    console.error("Signup error:", err);
+  } finally {
+    // Reset error after 3 seconds
     setTimeout(() => {
-      Object.assign(error, { message: "", errors: {} });
-    }, 2000);
-    return error;
+      error.message = "";
+      error.errors = [];
+    }, 3000);
   }
 };
 </script>
 
 <template>
-  <div
-    class="flex items-center align-middle text-black justify-center h-screen bg-ray-500"
-  >
-    <div class="flex flex-col items-center justify-center w-full md:w-1/2">
-      <p v-if="error.message" class="text-red-500">{{ error.message }}</p>
-      <div v-if="error.errors">
-        <p v-for="error in error.errors" class="text-red-500">{{ error }}</p>
+  <div class="w-full flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-md p-8 rounded-lg">
+      <!-- Error Messages -->
+      <div v-if="error.message" class="mb-4 text-red-500 text-center">
+        {{ error.message }}
       </div>
+      <ul
+        v-if="error.errors.length"
+        class="mb-4 text-red-500 text-sm list-disc pl-5"
+      >
+        <li v-for="(err, index) in error.errors" :key="index">{{ err }}</li>
+      </ul>
 
+      <!-- Signup Form -->
       <AuthForm
         title="Sign up"
         buttonText="Signup"
         :showName="true"
         @submit="handleSignup"
-        formData="formData"
       />
-      <p class="text-center mt-4">
+
+      <!-- Redirect to Login -->
+      <p class="text-center mt-4 text-gray-700">
         Already have an account?
-        <router-link to="/login" class="text-blue-500">Login</router-link>
+        <router-link to="/login" class="text-blue-500 hover:underline"
+          >Login</router-link
+        >
       </p>
     </div>
   </div>

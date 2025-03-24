@@ -1,28 +1,28 @@
 <script setup>
 import AuthForm from "@/components/AuthForm.vue";
-import { useAuthStore } from "@/stores/authStore";
 import { onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-
-const { saveUser } = useAuthStore();
 const router = useRouter();
 
-const error = reactive({});
+const error = reactive({
+  message: "",
+  errors: [],
+});
 
 onMounted(() => {
-  // Redirect to home view if their is a token
+  // Redirect to home view if user is already logged in
   const user = JSON.parse(localStorage.getItem("user"));
-  if (user.token) {
+  if (user?.token) {
     router.push("/");
   }
 });
 
 const handleLogin = async (userData) => {
   try {
-    // Reset error before making a new request
-    Object.assign(error, { message: "", errors: {} });
+    error.message = "";
+    error.errors = [];
 
     const response = await fetch(`${BASE_URL}/api/users/login`, {
       method: "POST",
@@ -34,51 +34,63 @@ const handleLogin = async (userData) => {
 
     if (!response.ok) {
       const errorResponse = await response.json();
-      Object.assign(error, {
-        message: errorResponse.message || "Login failed",
-        errors: errorResponse.errors || {},
-      });
-      throw new Error(errorResponse.message);
+      error.message = errorResponse.message || "Login failed";
+      error.errors = Array.isArray(errorResponse.errors)
+        ? errorResponse.errors
+        : [];
+
+      console.log({ error });
+
+      return;
     }
 
     const data = await response.json();
-    saveUser(data);
 
-    router.go("/");
-
-    return data;
+    localStorage.setItem("user", JSON.stringify(data));
+    router.push("/");
+    router.go();
   } catch (err) {
-    console.log("Login failed:", { err });
-    Object.assign(error, { message: err.message });
-
-    // Reset error
+    error.message = "Something went wrong. Please try again.";
+    console.error("Login error:", err);
+  } finally {
+    // Reset error after 3 seconds
     setTimeout(() => {
-      Object.assign(error, { message: "", errors: {} });
-    }, 2000);
-
-    return error;
+      error.message = "";
+      error.errors = [];
+    }, 3000);
   }
 };
 </script>
 
 <template>
-  <div
-    class="flex items-center align-middle text-black justify-center h-screen bg-ray-500"
-  >
-    <div class="flex flex-col items-center justify-center w-full md:w-1/2">
-      <p v-if="error.message" class="text-red-500">{{ error.message }}</p>
-      <div v-if="error.errors">
-        <p v-for="error in error.errors" class="text-red-500">{{ error }}</p>
+  <div class="container flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-md p-8 rounded-lg">
+      <!-- Error Messages -->
+      <div v-if="error.message" class="mb-4 text-red-500 text-center">
+        {{ error.message }}
       </div>
+      <ul
+        v-if="error.errors.length > 0"
+        class="mb-4 text-red-500 text-sm list-disc pl-5"
+      >
+        sds
+        <li v-for="(err, index) in error.errors" :key="index">{{ err }}</li>
+      </ul>
+
+      <!-- Login Form -->
       <AuthForm
         title="Login"
         buttonText="Login"
         :showName="false"
         @submit="handleLogin"
       />
-      <p class="text-center mt-4">
+
+      <!-- Redirect to Signup -->
+      <p class="text-center mt-4 text-gray-700">
         Don't have an account?
-        <router-link to="/signup" class="text-blue-500">Sign Up</router-link>
+        <router-link to="/signup" class="text-blue-500 hover:underline"
+          >Sign Up</router-link
+        >
       </p>
     </div>
   </div>
