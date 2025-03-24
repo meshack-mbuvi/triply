@@ -13,7 +13,6 @@
         </button>
       </div>
     </div>
-
     <TripGrid />
   </div>
 </template>

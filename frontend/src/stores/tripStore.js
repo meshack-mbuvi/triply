@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export const useTripsStore = defineStore("trips", () => {
@@ -11,15 +11,21 @@ export const useTripsStore = defineStore("trips", () => {
     error: { message: "", errors: {} },
   });
 
+  const isLoading = ref(false);
+
   const router = useRouter();
 
   const getTrips = async () => {
     try {
+      setIsLoading(true);
+
       // Retrieve auth token from local storage
       const user = JSON.parse(localStorage.getItem("user"));
       const token = user?.token;
 
       if (!token) {
+        setIsLoading(false);
+
         router.push("/login");
         return;
       }
@@ -62,18 +68,26 @@ export const useTripsStore = defineStore("trips", () => {
       trips.total = data.total;
       trips.page = data.page;
       trips.totalPages = data.totalPages;
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
+
       console.error("Unable to fetch trips:", err);
       trips.error.message = err.message;
 
       setTimeout(() => {
         trips.error = { message: "", errors: {} };
       }, 2000);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const setIsLoading = (loading) => (isLoading.value = loading);
 
   return {
     trips,
     getTrips,
+    isLoading,
   };
 });
