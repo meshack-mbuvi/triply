@@ -10,19 +10,26 @@
           {{ trip.destination }}
         </p>
         <p class="flex flex-col text-sm text-gray-600">
-          <span class="font-medium"
-            >{{ formatDate(trip.startDate) }} -
-            {{ formatDate(trip.endDate) }}</span
-          >
+          <span class="font-medium">
+            {{ formatDate(trip.startDate) }} - {{ formatDate(trip.endDate) }}
+          </span>
         </p>
-        <div class="flex items-center mt-2 justify-between">
+        <div class="flex items-center space-x-4 justify-between mt-2">
           <p class="text-xl font-bold text-green-600">${{ trip.price }}</p>
-          <button
-            @click="handleDelete(trip.id)"
-            class="ml-2 text-red-500 cursor-pointer hover:text-red-700 transition"
-          >
-            <TrashIcon class="w-5 h-5" />
-          </button>
+          <div class="flex space-x-4">
+            <button
+              @click="openEditModal(trip)"
+              class="text-gray-500 cursor-pointer hover:text-gray-700 transition flex items-center"
+            >
+              <EditIcon class="w-5 h-5 mr-1" /> Edit
+            </button>
+            <button
+              @click="handleDelete(trip.id)"
+              class="text-red-500 cursor-pointer hover:text-red-700 transition flex items-center"
+            >
+              <TrashIcon class="w-5 h-5 mr-1" /> Delete
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -30,12 +37,15 @@
 </template>
 
 <script setup>
+import { useModalStore } from "@/stores/modalStore";
 import { useTripsStore } from "@/stores/tripStore";
-import { Trash2 as TrashIcon } from "lucide-vue-next";
+import { Edit2 as EditIcon, Trash2 as TrashIcon } from "lucide-vue-next";
 import { toast } from "vue3-toastify";
 
 const props = defineProps(["trip"]);
+
 const { deleteTrip } = useTripsStore();
+const { openModal } = useModalStore();
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-US", {
@@ -44,13 +54,19 @@ const formatDate = (date) =>
     day: "numeric",
   });
 
+const openEditModal = (trip) => {
+  openModal(trip);
+};
+
 const handleDelete = async (id) => {
+  const confirmDelete = confirm("Are you sure you want to delete this trip?");
+  if (!confirmDelete) return;
+
   try {
     await deleteTrip(id);
     toast.success("Trip deleted successfully", { autoClose: 3000 });
   } catch (error) {
     toast.error("Failed to delete trip", { autoClose: 3000 });
-    console.error(error);
   }
 };
 </script>
