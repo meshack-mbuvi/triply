@@ -1,9 +1,9 @@
-import { AppDataSource } from "@/config/data-source"; // Import configured database connection
-import { UserEntity } from "@/entities/user.entity"; // Import User entity for database operations
 import bcrypt from "bcryptjs"; // Library for hashing passwords
 import dotenv from "dotenv"; // Load environment variables from .env file
 import { Request, Response } from "express"; // Import Express types for request and response handling
 import jwt from "jsonwebtoken";
+import { AppDataSource } from "../../config/data-source"; // Import configured database connection
+import { UserEntity } from "../../entities/user.entity"; // Import User entity for database operations
 dotenv.config(); // Load environment variables
 
 export class UserController {

@@ -1,6 +1,6 @@
-import { AppDataSource } from "@/config/data-source";
-import { Trip } from "@/entities/trip.entity";
 import { Request, Response } from "express";
+import { AppDataSource } from "../../config/data-source";
+import { Trip } from "../../entities/trip.entity";
 
 export class TripController {
   static async createTrip(req: Request, res: Response) {

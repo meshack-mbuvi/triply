@@ -1,7 +1,7 @@
-import { TripController } from "@/controllers/trip";
-import { tripSchema, updateTripSchema } from "@/schemas/trip";
-import { validate } from "@/utils/validate";
 import { Router } from "express";
+import { TripController } from "../controllers/trip";
+import { tripSchema, updateTripSchema } from "../schemas/trip";
+import { validate } from "../utils/validate";
 import { asyncHandler } from "./utils";
 
 const router: Router = Router();

@@ -1,8 +1,8 @@
-import { auth } from "@/middleware/auth";
-import { userSchema } from "@/schemas/user";
-import { validate } from "@/utils/validate";
 import { Router } from "express";
 import { UserController } from "../controllers/user";
+import { auth } from "../middleware/auth";
+import { userSchema } from "../schemas/user";
+import { validate } from "../utils/validate";
 import { asyncHandler } from "./utils";
 
 const router: Router = Router();

@@ -1,11 +1,11 @@
-// import routes from "@/src/routes";
+
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { Application, NextFunction, Request, Response } from "express";
 import routes from "../routes";
 
-import { swaggerSpec } from "@/docs/swagger";
+import { swaggerSpec } from "../docs/swagger";
 import swaggerUi from "swagger-ui-express";
 
 dotenv.config();

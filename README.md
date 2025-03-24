@@ -1,6 +1,4 @@
-# Travel Website
-
-Triply
+## Triply
 
 ## Objective
 
@@ -161,12 +159,16 @@ Ensure you have the following installed:
 
 ## Trade-offs
 
-| Choice                   | Trade-off                                           |
-|--------------------------|----------------------------------------------------|
-| **JWT Authentication**   | Requires token storage on the frontend (localStorage/sessionStorage) |
-| **Client-Side Validation** | Needs additional backend validation for security |
-| **Only Owner Can Edit Trips** | Limits admin-level modifications |
+| Choice                        | Trade-off                                                            |
+| ----------------------------- | -------------------------------------------------------------------- |
+| **JWT Authentication**        | Requires token storage on the frontend (localStorage/sessionStorage) |
+| **Client-Side Validation**    | Needs additional backend validation for security                     |
+| **Only Owner Can Edit Trips** | Limits admin-level modifications                                     |
 
+## Deployment
+
+The backend app is deployed on vercel. You can access it on
+https://triply-goyufhzb6-meshackmbuvis-projects.vercel.app
 
 ## License
 
