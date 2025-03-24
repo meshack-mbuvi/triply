@@ -55,7 +55,7 @@ const handleSignup = async (userData) => {
   <div
     class="flex items-center align-middle text-black justify-center h-screen bg-ray-500"
   >
-    <div class="flex flex-col items-center justify-center w-1/2">
+    <div class="flex flex-col items-center justify-center w-full md:w-1/2">
       <p v-if="error.message" class="text-red-500">{{ error.message }}</p>
       <div v-if="error.errors">
         <p v-for="error in error.errors" class="text-red-500">{{ error }}</p>
