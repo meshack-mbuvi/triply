@@ -14,5 +14,6 @@ router.post(
 );
 router.post("/login", asyncHandler(UserController.login));
 router.patch("/profile", auth, asyncHandler(UserController.profile));
+router.get("/me", auth, asyncHandler(UserController.getUserDetails));
 
 export default router;

@@ -21,6 +21,9 @@ export class UserEntity {
   @Column({ type: "varchar", unique: true })
   email: string;
 
+  @Column({ type: "varchar", nullable: true })
+  bio: string;
+
   @CreateDateColumn({ type: "timestamp" })
   created_at: Date;
 

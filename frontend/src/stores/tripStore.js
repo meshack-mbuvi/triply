@@ -1,11 +1,8 @@
+import { fetchWithAuth } from "@/utils/fetchWithAuth";
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
-
-const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const useTripsStore = defineStore("trips", () => {
-  const router = useRouter();
   const isLoading = ref(false);
 
   const trips = reactive({
@@ -22,47 +19,12 @@ export const useTripsStore = defineStore("trips", () => {
     endDate: "",
   });
 
-  // Get user token from localStorage
-  const getUserToken = () => {
-    return JSON.parse(localStorage.getItem("user"))?.token || null;
-  };
-
-  // Fetch wrapper with authentication
-  const fetchWithAuth = async (url, options = {}) => {
-    const token = getUserToken();
-    if (!token) {
-      router.push("/login");
-      throw new Error("User not authenticated");
-    }
-
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-        ...options.headers,
-      },
-    });
-
-    if (response.status === 401) {
-      localStorage.removeItem("user");
-      router.push("/login");
-      throw new Error("Unauthorized");
-    }
-
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(errorResponse.message || "Request failed");
-    }
-
-    return response.json();
-  };
 
   // Fetch trips
   const getTrips = async () => {
     try {
       isLoading.value = true;
-      const data = await fetchWithAuth(`${BASE_URL}/api/trips`);
+      const data = await fetchWithAuth(`trips`);
       Object.assign(trips, data);
     } catch (err) {
       trips.error.message = err.message;
@@ -75,7 +37,7 @@ export const useTripsStore = defineStore("trips", () => {
   // Add a new trip
   const addTrip = async (trip) => {
     try {
-      await fetchWithAuth(`${BASE_URL}/api/trips`, {
+      await fetchWithAuth(`trips`, {
         method: "POST",
         body: JSON.stringify(trip),
       });
@@ -87,7 +49,7 @@ export const useTripsStore = defineStore("trips", () => {
 
   const updateTrip = async (id, updatedTrip) => {
     try {
-      await fetchWithAuth(`${BASE_URL}/api/trips/${id}`, {
+      await fetchWithAuth(`trips/${id}`, {
         method: "PATCH",
         body: JSON.stringify(updatedTrip),
       });
@@ -100,7 +62,7 @@ export const useTripsStore = defineStore("trips", () => {
   // Delete a trip
   const deleteTrip = async (id) => {
     try {
-      await fetchWithAuth(`${BASE_URL}/api/trips/${id}`, { method: "DELETE" });
+      await fetchWithAuth(`trips/${id}`, { method: "DELETE" });
       await getTrips(); // Refresh list after deletion
     } catch (err) {
       console.error("Error deleting trip:", err);
@@ -128,9 +90,7 @@ export const useTripsStore = defineStore("trips", () => {
     try {
       isLoading.value = true;
       const queryString = buildQueryString(newFilters);
-      const data = await fetchWithAuth(
-        `${BASE_URL}/api/trips/filter?${queryString}`
-      );
+      const data = await fetchWithAuth(`trips/filter?${queryString}`);
       Object.assign(trips, data);
     } catch (err) {
       trips.error.message = err.message;

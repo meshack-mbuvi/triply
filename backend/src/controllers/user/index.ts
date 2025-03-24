@@ -119,7 +119,7 @@ export class UserController {
   }
 
   /**
-   * Updates the authenticated user's profile (full name & password).
+   * Updates the authenticated user's profile (full name, bio & password).
    *
    * @param {Request} req - Express request object.
    * @param {Response} res - Express response object.
@@ -127,13 +127,13 @@ export class UserController {
    */
   static async profile(req: Request, res: Response): Promise<Response> {
     try {
-      const { password, fullName, user } = req.body;
+      const { fullName, bio, user } = req.body;
 
       // Ensure at least one field is provided
-      if (!fullName && !password) {
+      if (!fullName && !bio) {
         return res
           .status(400)
-          .json({ message: "Full name or password is required" });
+          .json({ message: "At least one field must be provided for update" });
       }
 
       const userRepository = AppDataSource.getRepository(UserEntity);
@@ -142,6 +142,7 @@ export class UserController {
       const existingUser = await userRepository.findOne({
         where: { email: user.email },
       });
+
       if (!existingUser) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -149,11 +150,12 @@ export class UserController {
       // Prepare updated data
       const updatedData: Partial<UserEntity> = {};
       if (fullName?.trim()) updatedData.fullName = fullName.trim();
-      if (password?.trim())
-        updatedData.password = bcrypt.hashSync(password.trim(), 10);
+      if (bio?.trim()) updatedData.bio = bio.trim();
 
-      // Update user details
-      await userRepository.update({ email: user.email }, updatedData);
+      // Update only if there are fields to update
+      if (Object.keys(updatedData).length > 0) {
+        await userRepository.update({ email: user.email }, updatedData);
+      }
 
       // Fetch updated user details
       const updatedUser = await userRepository.findOne({
@@ -173,6 +175,29 @@ export class UserController {
     } catch (error) {
       console.error("Error updating user:", error);
       return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  static async getUserDetails(req: Request, res: Response): Promise<Response> {
+    try {
+      const { user } = req.body;
+      const userRepository = AppDataSource.getRepository(UserEntity);
+
+      // Find user by email
+      const existingUser = await userRepository.findOne({
+        where: { email: user.email },
+      });
+
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const { password, ...otherUserProperties } = existingUser;
+
+      return res.json({ user: otherUserProperties });
+    } catch (error) {
+      console.log("server error: ", { error });
+      return res.status(500).json({ message: "Server error" });
     }
   }
 }

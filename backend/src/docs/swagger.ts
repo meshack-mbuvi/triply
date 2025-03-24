@@ -22,6 +22,7 @@ const swaggerDefinition = {
         properties: {
           id: { type: "integer", example: 1 },
           fullName: { type: "string", example: "John Doe" },
+          bio: { type: "string", example: "A full stack software developer" },
           email: {
             type: "string",
             format: "email",

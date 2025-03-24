@@ -4,7 +4,7 @@
  *   patch:
  *     summary: Update user profile
  *     tags: [Users]
- *     description: Allows authenticated users to update their full name and/or password.
+ *     description: Allows authenticated users to update their full name, and/or bio. At least one field must be provided.
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -17,10 +17,9 @@
  *               fullName:
  *                 type: string
  *                 example: "John Doe"
- *               password:
+ *               bio:
  *                 type: string
- *                 format: password
- *                 example: "NewSecurePassword123"
+ *                 example: "Software developer passionate about blockchain technology."
  *     responses:
  *       200:
  *         description: User updated successfully
@@ -35,7 +34,7 @@
  *                 user:
  *                   $ref: '#/components/schemas/User'
  *       400:
- *         description: Bad request (Missing required fields)
+ *         description: Bad request (At least one field must be provided)
  *       401:
  *         description: Unauthorized (Invalid or missing token)
  *       404:

@@ -1,8 +1,8 @@
 <template>
-  <div class="container mx-auto p-6">
+  <div class="container mx-auto p-6 py-4">
     <Loader v-if="isLoading" />
     <div
-      v-if="trips.trips.length === 0"
+      v-if="trips.trips.length === 0 && !isLoading"
       class="flex flex-col justify-center items-center space-y-8 py-16"
     >
       <p class="text-2xl text-gray-900 transition animate-bounce">
