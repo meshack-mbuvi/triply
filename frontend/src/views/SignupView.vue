@@ -4,6 +4,8 @@ import { useAuthStore } from "@/stores/authStore.js";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const { saveUser } = useAuthStore();
 
 const router = useRouter();
@@ -11,16 +13,13 @@ const error = reactive({});
 
 const handleSignup = async (userData) => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/users/signup`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData), // Convert JS object to JSON
-      }
-    );
+    const response = await fetch(`${BASE_URL}/api/users/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData), // Convert JS object to JSON
+    });
 
     if (!response.ok) {
       const errorResponse = await response.json(); // Get error details

@@ -7,17 +7,25 @@
       <div class="flex items-center">
         <button
           @click="store.openModal"
-          class="ml-3 cursor-pointer bg-gray-200 text-gray-700 px-4 py-4 rounded-lg hover:bg-gray-300"
+          class="ml-3 flex cursor-pointer items-center gap-2 bg-blue-600 text-white px-5 py-3 rounded-lg shadow-md transition-all duration-300 hover:bg-blue-700 active:scale-95"
         >
-          + Add Trip
+          <span class="text-lg font-semibold">+ Add Trip</span>
         </button>
       </div>
     </div>
     <TripGrid />
+    <ModalWindow v-if="store.isOpen">
+      <TripForm />
+    </ModalWindow>
   </div>
 </template>
 
 <script setup>
+import ModalWindow from "@/components/modal/ModalWindow.vue";
 import Navbar from "@/components/Navbar.vue";
+import TripForm from "@/components/trips/TripForm.vue";
 import TripGrid from "@/components/trips/TripGrid.vue";
+import { useModalStore } from "@/stores/modalStore";
+
+const store = useModalStore();
 </script>

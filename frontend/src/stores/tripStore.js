@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 export const useTripsStore = defineStore("trips", () => {
   const trips = reactive({
     trips: [],
@@ -14,6 +16,8 @@ export const useTripsStore = defineStore("trips", () => {
   const isLoading = ref(false);
 
   const router = useRouter();
+
+  const setIsLoading = (loading) => (isLoading.value = loading);
 
   const getTrips = async () => {
     try {
@@ -30,16 +34,13 @@ export const useTripsStore = defineStore("trips", () => {
         return;
       }
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/trips`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/trips`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
 
       // Handle unauthenticated user
       if (response.status === 401) {
@@ -83,11 +84,62 @@ export const useTripsStore = defineStore("trips", () => {
     }
   };
 
-  const setIsLoading = (loading) => (isLoading.value = loading);
+  const addTrip = async (trip) => {
+    try {
+      // Retrieve auth token from local storage
+      const user = JSON.parse(localStorage.getItem("user"));
+      const token = user?.token;
+
+      if (!token) {
+        setIsLoading(false);
+
+        router.push("/login");
+        router.go();
+        return;
+      }
+
+      const response = await fetch(`${BASE_URL}/api/trips`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(trip),
+      });
+
+      // Handle unauthenticated user
+      if (response.status === 401) {
+        // Remove user from local storage
+        localStorage.removeItem("user");
+
+        // redirect to login
+        router.push("/login");
+
+        return;
+      }
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        tripsData.error = {
+          message: errorResponse.message || "Failed to fetch trips",
+          errors: errorResponse.errors || {},
+        };
+        throw new Error(errorResponse.message);
+      }
+
+      await response.json();
+
+      // Refetch trips
+      await getTrips();
+    } catch (err) {
+      console.log({ err });
+    }
+  };
 
   return {
     trips,
     getTrips,
     isLoading,
+    addTrip,
   };
 });
