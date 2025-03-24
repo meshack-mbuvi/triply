@@ -19,13 +19,14 @@ export const useTripsStore = defineStore("trips", () => {
 
   const setIsLoading = (loading) => (isLoading.value = loading);
 
+  const getUserToken = () =>
+    JSON.parse(localStorage.getItem("user")).token || null;
+
   const getTrips = async () => {
     try {
       setIsLoading(true);
 
-      // Retrieve auth token from local storage
-      const user = JSON.parse(localStorage.getItem("user"));
-      const token = user?.token;
+      const token = getUserToken();
 
       if (!token) {
         setIsLoading(false);
@@ -86,9 +87,7 @@ export const useTripsStore = defineStore("trips", () => {
 
   const addTrip = async (trip) => {
     try {
-      // Retrieve auth token from local storage
-      const user = JSON.parse(localStorage.getItem("user"));
-      const token = user?.token;
+      const token = getUserToken();
 
       if (!token) {
         setIsLoading(false);
@@ -120,14 +119,8 @@ export const useTripsStore = defineStore("trips", () => {
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        tripsData.error = {
-          message: errorResponse.message || "Failed to fetch trips",
-          errors: errorResponse.errors || {},
-        };
         throw new Error(errorResponse.message);
       }
-
-      await response.json();
 
       // Refetch trips
       await getTrips();
@@ -136,10 +129,41 @@ export const useTripsStore = defineStore("trips", () => {
     }
   };
 
+  const deleteTrip = async (id) => {
+    const token = getUserToken();
+
+    try {
+      if (!token) {
+        setIsLoading(false);
+
+        router.push("/login");
+        router.go();
+        return;
+      }
+
+      const response = await fetch(`${BASE_URL}/api/trips/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+
+      console.log({ response });
+
+      // Refetch trips
+      await getTrips();
+    } catch (error) {
+      console.log({ error });
+      throw error;
+    }
+  };
+
   return {
     trips,
     getTrips,
     isLoading,
     addTrip,
+    deleteTrip,
   };
 });
