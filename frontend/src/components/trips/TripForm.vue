@@ -4,7 +4,7 @@
     class="space-y-4 max-w-md mx-auto p-4 sm:p-6"
   >
     <div>
-      <label class="block text-sm sm:text-lg font-medium" for="">Title</label>
+      <label class="block text-sm sm:text-lg font-medium">Title</label>
       <input
         v-model="localTrip.title"
         type="text"
@@ -62,9 +62,9 @@
     </div>
     <button
       type="submit"
-      class="w-full rounded bg-blue-600 p-2 sm:p-3 text-white text-sm sm:text-lg"
+      class="w-full cursor-pointer rounded bg-blue-600 p-2 sm:p-3 text-white text-sm sm:text-lg"
     >
-      Add Trip
+      {{ localTrip.id ? "Update Trip" : "Add Trip" }}
     </button>
   </form>
 </template>
@@ -72,9 +72,12 @@
 <script setup>
 import { useModalStore } from "@/stores/modalStore";
 import { useTripsStore } from "@/stores/tripStore";
-import { computed, reactive } from "vue";
+import { computed, reactive, watch } from "vue";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+
+const { addTrip, updateTrip } = useTripsStore();
+const { closeModal, selectedTrip } = useModalStore();
 
 const localTrip = reactive({
   title: "",
@@ -85,24 +88,38 @@ const localTrip = reactive({
   price: "",
 });
 
+watch(
+  () => selectedTrip, // Ensure reactivity
+  async (newTrip) => {
+    if (newTrip) {
+      Object.assign(localTrip, newTrip);
+    } else {
+      Object.assign(localTrip, {
+        title: "",
+        description: "",
+        destination: "",
+        startDate: "",
+        endDate: "",
+        price: "",
+      });
+    }
+  },
+  { immediate: true, deep: true }
+);
+
 const minDate = computed(() => {
-  const today = new Date().toISOString().split("T")[0];
-  return today;
+  return new Date().toISOString().split("T")[0];
 });
 
-const { addTrip } = useTripsStore();
-const { closeModal } = useModalStore();
-
-// Create a new trip
 const handleSubmit = async () => {
   try {
-    await addTrip(localTrip);
-
-    // show success message
-    toast.success("Trip added successfully", {
-      autoClose: 3000,
-    });
-
+    if (localTrip.id) {
+      await updateTrip(selectedTrip.id, localTrip);
+      toast.success("Trip updated successfully", { autoClose: 3000 });
+    } else {
+      await addTrip(localTrip);
+      toast.success("Trip added successfully", { autoClose: 3000 });
+    }
     closeModal();
   } catch (error) {
     console.log({ error });

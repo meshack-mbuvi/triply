@@ -85,6 +85,18 @@ export const useTripsStore = defineStore("trips", () => {
     }
   };
 
+  const updateTrip = async (id, updatedTrip) => {
+    try {
+      await fetchWithAuth(`${BASE_URL}/api/trips/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(updatedTrip),
+      });
+      await getTrips(); // Refresh list after adding
+    } catch (err) {
+      console.error("Error adding trip:", err);
+    }
+  };
+
   // Delete a trip
   const deleteTrip = async (id) => {
     try {
@@ -102,7 +114,16 @@ export const useTripsStore = defineStore("trips", () => {
     ).toString();
   };
 
-  // Apply filters
+  /**
+   * Filters trips based on provided filters and updates the trips list.
+   *
+   * @param {Object} newFilters - The filters to apply when fetching trips.
+   * @param {string} [newFilters.destination] - Destination to filter by.
+   * @param {string} [newFilters.startDate] - Start date for filtering trips.
+   * @param {string} [newFilters.endDate] - End date for filtering trips.
+   * @param {number} [newFilters.maxPrice] - Maximum price filter.
+   * @returns {Promise<void>} Resolves when the trips list is updated.
+   */
   const updateFilters = async (newFilters) => {
     try {
       isLoading.value = true;
@@ -127,5 +148,6 @@ export const useTripsStore = defineStore("trips", () => {
     deleteTrip,
     tripFilters,
     updateFilters,
+    updateTrip,
   };
 });
