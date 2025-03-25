@@ -1,9 +1,14 @@
 {
   "version": 2,
+  "name": "triply-api",
+  "scope": "meshackmbuvis-projects",
   "builds": [
     {
       "src": "dist/index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["./dist/**", "./node_modules/swagger-ui-dist/**"]
+      }
     }
   ],
   "routes": [

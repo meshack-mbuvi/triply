@@ -1,12 +1,11 @@
-
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { Application, NextFunction, Request, Response } from "express";
 import routes from "../routes";
 
-import { swaggerSpec } from "../docs/swagger";
 import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "../docs/swagger";
 
 dotenv.config();
 
@@ -20,7 +19,15 @@ export function createApp() {
       extended: true,
     })
   );
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "*", // Allow only your frontend
+      methods: ["GET", "POST", "PATCH", "DELETE"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      credentials: true, // Allow cookies & auth headers
+    })
+  );
+
   // swagger setup
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   app.use("/api", routes);
