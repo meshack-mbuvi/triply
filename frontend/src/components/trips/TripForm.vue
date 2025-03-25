@@ -21,6 +21,7 @@
         required
       ></textarea>
     </div>
+
     <div>
       <label class="block text-sm sm:text-lg font-medium">Destination</label>
       <input
@@ -30,6 +31,7 @@
         required
       />
     </div>
+
     <div>
       <label class="block text-sm sm:text-lg font-medium">Start Date</label>
       <input
@@ -40,6 +42,7 @@
         required
       />
     </div>
+
     <div>
       <label class="block text-sm sm:text-lg font-medium">End Date</label>
       <input
@@ -50,6 +53,7 @@
         required
       />
     </div>
+
     <div>
       <label class="block text-sm sm:text-lg font-medium">Price</label>
       <input
@@ -60,11 +64,19 @@
         required
       />
     </div>
+
     <button
       type="submit"
-      class="w-full cursor-pointer rounded bg-blue-600 p-2 sm:p-3 text-white text-sm sm:text-lg"
+      :disabled="loading"
+      class="w-full cursor-pointer rounded bg-blue-600 p-2 sm:p-3 text-white text-sm sm:text-lg flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      {{ localTrip.id ? "Update Trip" : "Add Trip" }}
+      <span
+        v-if="loading"
+        class="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"
+      ></span>
+      <span>{{
+        loading ? "Processing..." : localTrip.id ? "Update Trip" : "Add Trip"
+      }}</span>
     </button>
   </form>
 </template>
@@ -72,7 +84,7 @@
 <script setup>
 import { useModalStore } from "@/stores/modalStore";
 import { useTripsStore } from "@/stores/tripStore";
-import { computed, reactive, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
@@ -88,8 +100,10 @@ const localTrip = reactive({
   price: "",
 });
 
+const loading = ref(false);
+
 watch(
-  () => selectedTrip, // Ensure reactivity
+  () => selectedTrip,
   async (newTrip) => {
     if (newTrip) {
       Object.assign(localTrip, newTrip);
@@ -112,6 +126,9 @@ const minDate = computed(() => {
 });
 
 const handleSubmit = async () => {
+  if (loading.value) return; // Prevent multiple submissions
+  loading.value = true;
+
   try {
     if (localTrip.id) {
       await updateTrip(selectedTrip.id, localTrip);
@@ -123,6 +140,9 @@ const handleSubmit = async () => {
     closeModal();
   } catch (error) {
     console.log({ error });
+    toast.error("An error occurred. Please try again.");
+  } finally {
+    loading.value = false;
   }
 };
 </script>

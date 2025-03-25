@@ -1,11 +1,9 @@
 <script setup>
 import AuthForm from "@/components/AuthForm.vue";
-import { useAuthStore } from "@/stores/authStore.js";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-const { saveUser } = useAuthStore();
 const router = useRouter();
 
 const error = reactive({
@@ -35,18 +33,16 @@ const handleSignup = async (userData) => {
       return;
     }
 
-    const data = await response.json();
-    saveUser(data.user);
     router.push("/");
   } catch (err) {
     error.message = "Something went wrong. Please try again.";
     console.error("Signup error:", err);
   } finally {
-    // Reset error after 3 seconds
+    // Reset error after 4 seconds
     setTimeout(() => {
       error.message = "";
       error.errors = [];
-    }, 3000);
+    }, 4000);
   }
 };
 </script>

@@ -1,12 +1,15 @@
 <template>
-  <div class="container mx-auto p-6 py-4">
+  <div class="container mx-auto p-6 py-4 space-y-10">
     <Loader v-if="isLoading" />
+
+    <!-- No Trips Message -->
     <div
       v-if="trips.trips.length === 0 && !isLoading"
       class="flex flex-col justify-center items-center space-y-8 py-16"
     >
       <p class="text-2xl text-gray-800 transition animate-pulse">
-        No trips available. Click the button below to add your first trip!
+        No trips available. Click the button below to add your first trip or
+        adjust your filters to find matching trips!
       </p>
       <button
         @click="openModal"
@@ -16,12 +19,22 @@
       </button>
     </div>
 
+    <!-- Trip List -->
     <div
       v-if="trips.trips.length > 0"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10"
     >
-      <TripCard v-for="trip in trips.trips" :key="trip.id" :trip="trip" />
+      <TripCard v-for="trip in paginatedTrips" :key="trip.id" :trip="trip" />
     </div>
+
+    <!-- Pagination -->
+    <Pagination
+      v-if="trips.trips.length > itemsPerPage"
+      :currentPage="currentPage"
+      :totalItems="trips.trips.length"
+      :itemsPerPage="itemsPerPage"
+      @page-change="handlePageChange"
+    />
 
     <!-- Modal to add new trip -->
     <ModalWindow v-if="isOpen">
@@ -33,14 +46,27 @@
 <script setup>
 import { useModalStore } from "@/stores/modalStore";
 import { useTripsStore } from "@/stores/tripStore";
-import { onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import Loader from "../ui/Loader.vue";
+import Pagination from "../ui/Pagination.vue";
 import TripCard from "./TripCard.vue";
 
 const { trips, getTrips, isLoading } = useTripsStore();
 const { openModal, isOpen } = useModalStore();
 
+const currentPage = ref(1);
+const itemsPerPage = 8;
+
 onMounted(() => {
   getTrips();
 });
+
+const paginatedTrips = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  return trips.trips.slice(start, start + itemsPerPage);
+});
+
+const handlePageChange = (page) => {
+  currentPage.value = page;
+};
 </script>

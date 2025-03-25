@@ -1,7 +1,6 @@
 <template>
   <div>
     <div
-      v-if="trips.trips.length > 0"
       class="flex flex-wrap items-center border-b border-gray-300 justify-between w-full p-4 gap-4 sm:flex-row"
     >
       <!-- Filter section -->
