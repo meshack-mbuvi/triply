@@ -19,7 +19,6 @@ export const useTripsStore = defineStore("trips", () => {
     endDate: "",
   });
 
-
   // Fetch trips
   const getTrips = async () => {
     try {

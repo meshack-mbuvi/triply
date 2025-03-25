@@ -6,7 +6,8 @@
       class="flex flex-col justify-center items-center space-y-8 py-16"
     >
       <p class="text-2xl text-gray-800 transition animate-pulse">
-        No trips available. Click the button below to add your first trip!
+        No trips available. Click the button below to add your first trip or
+        adjust your filters to find matching trips!
       </p>
       <button
         @click="openModal"

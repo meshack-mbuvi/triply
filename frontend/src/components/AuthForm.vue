@@ -31,26 +31,40 @@
         </p>
       </div>
 
-      <!-- Password Field -->
-      <div class="mb-4">
+      <!-- Password Field with Toggle -->
+      <div class="mb-4 relative">
         <label class="block text-gray-700 mb-1">Password</label>
-        <input
-          type="password"
-          v-model="formData.password"
-          placeholder="Enter your password"
-          class="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-300 outline-none"
-        />
+        <div class="relative">
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            v-model="formData.password"
+            placeholder="Enter your password"
+            class="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-300 outline-none pr-10"
+          />
+          <button
+            type="button"
+            class="absolute right-2 top-2 text-gray-500"
+            @click="togglePasswordVisibility"
+          >
+            {{ showPassword ? "🙈" : "👁️" }}
+          </button>
+        </div>
         <p v-if="errors.password" class="text-red-500 text-sm mt-1">
           {{ errors.password }}
         </p>
       </div>
 
-      <!-- Submit Button -->
+      <!-- Submit Button with Loading State -->
       <button
         type="submit"
-        class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200"
+        :disabled="loading"
+        class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200 flex justify-center items-center gap-2"
       >
-        {{ buttonText }}
+        <span
+          v-if="loading"
+          class="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"
+        ></span>
+        <span>{{ loading ? "Processing..." : buttonText }}</span>
       </button>
     </form>
   </div>
@@ -74,9 +88,16 @@ const formData = ref({
 });
 
 const errors = ref({});
+const showPassword = ref(false);
+const loading = ref(false);
 
-const handleSubmit = () => {
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
+
+const handleSubmit = async () => {
   errors.value = {};
+  loading.value = true;
 
   if (props.showName && !formData.value.fullName) {
     errors.value.fullName = "Full name is required";
@@ -89,7 +110,10 @@ const handleSubmit = () => {
   }
 
   if (Object.keys(errors.value).length === 0) {
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API call
     emit("submit", formData.value);
   }
+
+  loading.value = false;
 };
 </script>

@@ -7,9 +7,13 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 const { user } = useAuthStore();
-const isOpen = ref(false);
+
+const isMobileMenuOpen = ref(false);
+const isDropdownOpen = ref(false);
 
 const handleLogOut = () => {
+  isDropdownOpen.value = false;
+  isMobileMenuOpen.value = false;
   localStorage.setItem("user", null);
   router.push("/login");
 };
@@ -17,7 +21,7 @@ const handleLogOut = () => {
 // Close menu when clicking outside
 const closeMenu = (event) => {
   if (event.target.id === "mobile-menu-overlay") {
-    isOpen.value = false;
+    isMobileMenuOpen.value = false;
   }
 };
 </script>
@@ -44,14 +48,14 @@ const closeMenu = (event) => {
           <!-- Profile Dropdown -->
           <div class="relative">
             <button
-              @click="isOpen = !isOpen"
+              @click="isDropdownOpen = !isDropdownOpen"
               class="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg text-lg font-medium text-gray-800 hover:bg-gray-200 transition"
             >
               <User class="w-6 h-6 text-gray-600" />
               <span>{{ user.fullName }}</span>
               <svg
                 class="w-4 h-4 text-gray-600 transition-transform"
-                :class="{ 'rotate-180': isOpen }"
+                :class="{ 'rotate-180': isDropdownOpen }"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -76,11 +80,12 @@ const closeMenu = (event) => {
               leave-to-class="opacity-0 translate-y-2"
             >
               <div
-                v-if="isOpen"
+                v-if="isDropdownOpen"
                 class="absolute right-0 mt-2 w-48 bg-white shadow-xl rounded-lg p-2 border"
               >
                 <router-link
                   to="/me"
+                  @click="isDropdownOpen = false"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center rounded-lg"
                 >
                   <User class="w-4 h-4 mr-2" /> Profile
@@ -110,8 +115,11 @@ const closeMenu = (event) => {
       </div>
 
       <!-- Mobile Menu Button -->
-      <button class="md:hidden focus:outline-none" @click="isOpen = !isOpen">
-        <Menu v-if="!isOpen" size="28" class="text-gray-800" />
+      <button
+        class="md:hidden focus:outline-none"
+        @click="isMobileMenuOpen = !isMobileMenuOpen"
+      >
+        <Menu v-if="!isMobileMenuOpen" size="28" class="text-gray-800" />
         <X v-else size="28" class="text-gray-800" />
       </button>
     </div>
@@ -126,7 +134,7 @@ const closeMenu = (event) => {
       leave-to-class="opacity-0 scale-95"
     >
       <div
-        v-if="isOpen"
+        v-if="isMobileMenuOpen"
         id="mobile-menu-overlay"
         class="fixed inset-0 bg-black/50 flex justify-center items-center"
         @click="closeMenu"
@@ -142,6 +150,7 @@ const closeMenu = (event) => {
               <li>
                 <router-link
                   to="/me"
+                  @click="isMobileMenuOpen = false"
                   class="block text-left shadow text-lg font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-lg"
                 >
                   <User class="w-5 h-5 inline-block mr-2" /> Profile
@@ -159,6 +168,7 @@ const closeMenu = (event) => {
             <template v-else>
               <li>
                 <router-link
+                  @click="isMobileMenuOpen = false"
                   to="/login"
                   class="block text-lg font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-lg"
                 >
@@ -168,6 +178,7 @@ const closeMenu = (event) => {
               <li>
                 <router-link
                   to="/signup"
+                  @click="isMobileMenuOpen = false"
                   class="block text-lg font-medium bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
                 >
                   Sign Up
