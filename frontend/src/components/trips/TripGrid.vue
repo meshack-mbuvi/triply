@@ -5,8 +5,8 @@
       v-if="trips.trips.length === 0 && !isLoading"
       class="flex flex-col justify-center items-center space-y-8 py-16"
     >
-      <p class="text-2xl text-gray-900 transition animate-bounce">
-        No trips. Please click the button below to add a trip
+      <p class="text-2xl text-gray-800 transition animate-pulse">
+        No trips available. Click the button below to add your first trip!
       </p>
       <button
         @click="openModal"

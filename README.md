@@ -92,7 +92,10 @@ Ensure you have the following installed:
    ```
 3. Create a **.env** file and add:
    environment variables as shown in `.env-sample`
-4. Start the backend:
+4. Create tables by executing the following command:
+   - `npm run migration:generate` - Generates migration files if not present
+   - `npm run migration:run` - run the migration files
+5. Start the backend:
    ```sh
    npm run dev
    ```
@@ -167,8 +170,10 @@ Ensure you have the following installed:
 
 ## Deployment
 
-The backend app is deployed on vercel. You can access it on
-https://triply-goyufhzb6-meshackmbuvis-projects.vercel.app
+The app is deployed on vercel. You can access each deployment individually:
+
+- Backend: https://triply-api.vercel.app
+- Frontend: frontend-pi-eosin-75.vercel.app
 
 ## License
 

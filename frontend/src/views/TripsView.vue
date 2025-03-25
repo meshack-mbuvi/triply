@@ -1,6 +1,7 @@
 <template>
   <div class="">
     <div
+      v-if="trips.trips.length > 0"
       class="flex flex-wrap items-center border-b border-gray-300 justify-between w-full p-4 gap-4 sm:flex-row"
     >
       <!-- Filter section -->
@@ -31,6 +32,8 @@ import FilterTrip from "@/components/trips/FilterTrip.vue";
 import TripForm from "@/components/trips/TripForm.vue";
 import TripGrid from "@/components/trips/TripGrid.vue";
 import { useModalStore } from "@/stores/modalStore";
+import { useTripsStore } from "@/stores/tripStore";
 
 const store = useModalStore();
+const { trips } = useTripsStore();
 </script>

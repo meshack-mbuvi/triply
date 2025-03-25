@@ -7,7 +7,10 @@ const swaggerDefinition = {
     version: "1.0.0",
     description: "API documentation for the trip management system",
   },
-  servers: [{ url: "http://localhost:8000" }],
+  servers: [
+    { url: "http://localhost:8000" },
+    { url: "https://triply-api.vercel.app" },
+  ],
   components: {
     securitySchemes: {
       BearerAuth: {
@@ -61,9 +64,13 @@ const swaggerDefinition = {
   },
 };
 
+const isProd = process.env.NODE_ENV === "production";
+
 const options = {
   definition: swaggerDefinition,
-  apis: ["./src/docs/routes/**/*.ts"], // Separate API route documentation
+  apis: isProd
+    ? ["./dist/docs/routes/**/*.js"] // Use compiled .js files in production
+    : ["./src/docs/routes/**/*.ts"], // Use .ts files locally
 };
 
 export const swaggerSpec = swaggerJSDoc(options);
