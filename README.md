@@ -172,8 +172,8 @@ Ensure you have the following installed:
 
 The app is deployed on vercel. You can access each deployment individually:
 
-- Backend: https://triply-api.vercel.app
-- Frontend: frontend-pi-eosin-75.vercel.app
+- Backend: [https://triply-api.vercel.app](https://triply-api.vercel.app)
+- Frontend: [frontend-pi-eosin-75.vercel.app](https://frontend-pi-eosin-75.vercel.app)
 
 ## License
 
