@@ -4,7 +4,6 @@
     <input
       v-model="localFilters.destination"
       class="rounded border border-gray-300 p-2"
-      placeholder="Destination"
       type="text"
     />
 
@@ -13,6 +12,7 @@
       v-model="localFilters.startDate"
       type="date"
       class="rounded border border-gray-300 p-2"
+      placeholder="Start date"
     />
 
     <!-- End Date -->
@@ -20,6 +20,7 @@
       v-model="localFilters.endDate"
       type="date"
       class="rounded border border-gray-300 p-2"
+      placeholder="End date"
     />
 
     <!-- Max Price -->
@@ -42,7 +43,7 @@
     <!-- Reset Filters -->
     <button
       @click="resetFilters"
-      class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
+      class="bg-gray-300 cursor-pointer text-gray-800 px-4 py-2 rounded-lg"
     >
       Reset
     </button>
@@ -56,7 +57,11 @@ import { reactive } from "vue";
 const { tripFilters, updateFilters } = useTripsStore();
 
 // Create a local copy of filters to avoid modifying store directly
-const localFilters = reactive({ ...tripFilters });
+const localFilters = reactive({
+  ...tripFilters,
+  startDate: new Date().toISOString().split("T")[0], // Format YYYY-MM-DD
+  endDate: new Date().toISOString().split("T")[0], // Format YYYY-MM-DD
+});
 
 // Apply filters by updating the Pinia store
 const applyFilters = () => {

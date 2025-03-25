@@ -13,7 +13,15 @@ const handleLogOut = () => {
   localStorage.setItem("user", null);
   router.push("/login");
 };
+
+// Close menu when clicking outside
+const closeMenu = (event) => {
+  if (event.target.id === "mobile-menu-overlay") {
+    isOpen.value = false;
+  }
+};
 </script>
+
 <template>
   <nav class="bg-white border-b border-gray-200 shadow-sm w-screen py-4">
     <div class="container mx-auto flex items-center justify-between px-6">
@@ -24,7 +32,7 @@ const handleLogOut = () => {
         </router-link>
         <router-link
           to="/"
-          class="text-lg font-medium text-gray-700 hover:text-gray-900 transition"
+          class="hidden md:block text-lg font-medium text-gray-700 hover:text-gray-900 transition"
         >
           Trips
         </router-link>
@@ -108,58 +116,66 @@ const handleLogOut = () => {
       </button>
     </div>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Fullscreen Overlay Menu -->
     <transition
       enter-active-class="transition ease-out duration-300 transform"
-      enter-from-class="opacity-0 translate-y-[-10px]"
-      enter-to-class="opacity-100 translate-y-0"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
       leave-active-class="transition ease-in duration-200 transform"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 translate-y-[-10px]"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
     >
       <div
         v-if="isOpen"
-        class="md:hidden bg-white shadow-md border-t p-6 absolute top-16 left-0 w-full"
+        id="mobile-menu-overlay"
+        class="fixed inset-0 bg-black/50 flex justify-center items-center"
+        @click="closeMenu"
       >
-        <ul class="flex flex-col space-y-4">
-          <template v-if="user.fullName">
-            <li class="text-gray-800 font-semibold text-lg">
-              {{ user.fullName }}
-            </li>
-            <li>
-              <router-link
-                to="/me"
-                class="block hover:text-blue-500 flex items-center"
-              >
-                <User class="w-4 h-4 mr-2" /> Profile
-              </router-link>
-            </li>
-            <li>
-              <button
-                @click="handleLogOut"
-                class="block text-red-500 hover:text-red-600 flex items-center"
-              >
-                <LogOut class="w-4 h-4 mr-2" /> Logout
-              </button>
-            </li>
-          </template>
-          <template v-else>
-            <li>
-              <router-link
-                to="/login"
-                class="border border-gray-300 px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition block text-center"
-                >Log In</router-link
-              >
-            </li>
-            <li>
-              <router-link
-                to="/signup"
-                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition block text-center"
-                >Sign Up</router-link
-              >
-            </li>
-          </template>
-        </ul>
+        <div
+          class="bg-white shadow-lg rounded-lg p-6 w-3/4 max-w-sm text-center"
+        >
+          <ul class="flex flex-col space-y-2">
+            <template v-if="user.fullName">
+              <li class="text-gray-900 text-xl underline font-bold">
+                {{ user.fullName }}
+              </li>
+              <li>
+                <router-link
+                  to="/me"
+                  class="block text-left shadow text-lg font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-lg"
+                >
+                  <User class="w-5 h-5 inline-block mr-2" /> Profile
+                </router-link>
+              </li>
+              <li>
+                <button
+                  @click="handleLogOut"
+                  class="block text-lg shadow font-medium text-red-500 hover:text-red-600 hover:bg-gray-100 px-4 py-2 rounded-lg w-full text-left"
+                >
+                  <LogOut class="w-5 h-5 inline-block mr-2" /> Logout
+                </button>
+              </li>
+            </template>
+            <template v-else>
+              <li>
+                <router-link
+                  to="/login"
+                  class="block text-lg font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-lg"
+                >
+                  Log In
+                </router-link>
+              </li>
+              <li>
+                <router-link
+                  to="/signup"
+                  class="block text-lg font-medium bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                >
+                  Sign Up
+                </router-link>
+              </li>
+            </template>
+          </ul>
+        </div>
       </div>
     </transition>
   </nav>

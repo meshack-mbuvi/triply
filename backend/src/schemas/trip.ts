@@ -1,5 +1,9 @@
 import * as yup from "yup";
 
+// Get today's date at midnight (to remove time portion)
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
 export const tripSchema = yup.object({
   title: yup.string().required("Title is required").max(100, "Title too long"),
   description: yup.string().required("Description is required"),
@@ -7,7 +11,7 @@ export const tripSchema = yup.object({
   startDate: yup
     .date()
     .required("Start date is required")
-    .min(new Date(), "Start date cannot be in the past"),
+    .min(today, "Start date cannot be in the past"),
   endDate: yup
     .date()
     .required("End date is required")
