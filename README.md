@@ -100,7 +100,6 @@ Ensure you have the following installed:
    npm run dev
    ```
 
-
 ### Frontend Setup
 
 1. Navigate to the frontend directory:
@@ -171,8 +170,10 @@ Ensure you have the following installed:
 
 ## Deployment
 
-The backend app is deployed on vercel. You can access it on
-https://triply-api.vercel.app/
+The app is deployed on vercel. You can access each deployment individually:
+
+- Backend: https://triply-api.vercel.app
+- Frontend: frontend-pi-eosin-75.vercel.app
 
 ## License
 
