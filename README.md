@@ -79,30 +79,26 @@ Ensure you have the following installed:
 - PostgreSQL
 - npm or yarn
 
-### Backend Setup
+### How to ran the app locally
 
 1. Clone the repository:
-   ```sh
-   git clone https://github.com/meshack-mbuvi/triply.git
-   cd triply/backend
-   ```
-2. Install dependencies:
-   ```sh
-   npm install
-   ```
-3. Create a **.env** file and add:
-   environment variables as shown in `.env-sample`
-4. Create tables by executing the following command:
-   - `npm run migration:generate` - Generates migration files if not present
-   - `npm run migration:run` - run the migration files
-5. Start the backend:
+
+   - `git clone https://github.com/meshack-mbuvi/triply.git`
+   - `cd triply`
+
+2. Run backend:
+   ```cd backend && npm install`
+3. Create postgresql db and add the credentials to a **.env** file as shown in `.env-sample`
+
+4. Start the api(backend):
    ```sh
    npm run dev
    ```
+5. Access the api on http://localhost:8000 and documentation on http://localhost:8000/api-docs/
 
 ### Frontend Setup
 
-1. Navigate to the frontend directory:
+1. On another terminal, navigate to the frontend directory:
    ```sh
    cd triply/frontend
    ```
@@ -111,11 +107,12 @@ Ensure you have the following installed:
    npm install
    ```
 3. Create .env file and add `VITE_API_URL="http://localhost:8000"`
+
 4. Run the frontend:
    ```sh
    npm run dev
    ```
-5. Open the browser and visit `http://localhost:5173`.
+5. Open the browser and visit `http://localhost:5173` or the url displayed in your terminal.
 
 ---
 
@@ -173,6 +170,7 @@ Ensure you have the following installed:
 The app is deployed on vercel. You can access each deployment individually:
 
 - Backend: [https://triply-api.vercel.app](https://triply-api.vercel.app)
+  Docs can be access on `/api-docs` i.e https://triply-api.vercel.app/api-docs or http://localhost:8000/api-docs/
 - Frontend: [frontend-pi-eosin-75.vercel.app](https://frontend-pi-eosin-75.vercel.app)
 
 ## License
