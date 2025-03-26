@@ -2,6 +2,11 @@
   <div class="container mx-auto p-6 py-4 space-y-10">
     <Loader v-if="isLoading" />
 
+    <!-- Sort Component -->
+    <div class="flex justify-end">
+      <SortDropdown @sort-change="handleSortChange" />
+    </div>
+
     <!-- No Trips Message -->
     <div
       v-if="trips.trips.length === 0 && !isLoading"
@@ -49,6 +54,7 @@ import { useTripsStore } from "@/stores/tripStore";
 import { onMounted, ref } from "vue";
 import Loader from "../ui/Loader.vue";
 import Pagination from "../ui/Pagination.vue";
+import SortDropdown from "../ui/SortDropdown.vue"; // Import Sort Component
 import TripCard from "./TripCard.vue";
 
 const { trips, getTrips, isLoading } = useTripsStore();
@@ -56,15 +62,27 @@ const { openModal, isOpen } = useModalStore();
 
 const currentPage = ref(1);
 const itemsPerPage = 8;
+const sortOrder = ref("ASC"); // Default sorting: Descending order
 
 // Fetch trips when the component mounts
 onMounted(async () => {
-  await getTrips(currentPage.value, itemsPerPage);
+  await fetchTrips();
 });
+
+// Fetch trips with current state
+const fetchTrips = async () => {
+  await getTrips(currentPage.value, itemsPerPage, sortOrder.value);
+};
 
 // Fetch trips when a new page is selected
 const handlePageChange = async (page) => {
   currentPage.value = page;
-  await getTrips(page, itemsPerPage);
+  await fetchTrips();
+};
+
+// Handle sort change event
+const handleSortChange = async (order) => {
+  sortOrder.value = order;
+  await fetchTrips();
 };
 </script>

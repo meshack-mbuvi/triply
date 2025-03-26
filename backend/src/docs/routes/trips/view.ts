@@ -20,6 +20,12 @@
  *           type: integer
  *           default: 1
  *         description: Page number for pagination
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           default: ASC
+ *         description: Sort order. Values can be ASC or DESC
  *     responses:
  *       200:
  *         description: Successfully retrieved trips
