@@ -20,10 +20,11 @@ export const useTripsStore = defineStore("trips", () => {
   });
 
   // Fetch trips
-  const getTrips = async () => {
+  const getTrips = async (page, limit) => {
     try {
       isLoading.value = true;
-      const data = await fetchWithAuth(`trips`);
+      const url = `trips?page=${page}&limit=${limit}`;
+      const data = await fetchWithAuth(url);
       Object.assign(trips, data);
     } catch (err) {
       trips.error.message = err.message;
