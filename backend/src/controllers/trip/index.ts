@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { FindOptionsOrderValue } from "typeorm";
 import { AppDataSource } from "../../config/data-source";
 import { Trip } from "../../entities/trip.entity";
 
@@ -53,10 +54,37 @@ export class TripController {
   static async getTrips(req: Request, res: Response) {
     try {
       const { user } = req.body;
-      const tripId = +req.params.id;
 
       const limit = parseInt(req.query.limit as string, 10) || 10;
       const page = parseInt(req.query.page as string, 10) || 1;
+      const sortBy = (req.query.sortBy as FindOptionsOrderValue) || "ASC";
+
+      const tripRepository = AppDataSource.getRepository(Trip);
+      const [trips, total] = await tripRepository.findAndCount({
+        where: {
+          user: { id: user.id },
+        },
+        take: limit,
+        skip: (page - 1) * limit, // skip the previous pages' results
+        order: { createdAt: sortBy }, // Order by newest trips first
+      });
+
+      return res.status(200).json({
+        trips,
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+      });
+    } catch (error) {
+      res.status(500).send({ message: "Internal server error" });
+    }
+  }
+
+  static async getOneTrip(req: Request, res: Response) {
+    try {
+      const { user } = req.body;
+      const tripId = +req.params.id;
+
       const tripRepository = AppDataSource.getRepository(Trip);
 
       // retrieve a single trip for a given user
@@ -77,22 +105,6 @@ export class TripController {
           });
         }
       }
-
-      const [trips, total] = await tripRepository.findAndCount({
-        where: {
-          user: { id: user.id },
-        },
-        take: limit,
-        skip: (page - 1) * limit, // skip the previous pages' results
-        order: { createdAt: "DESC" }, // Order by newest trips first
-      });
-
-      return res.status(200).json({
-        trips,
-        total,
-        page,
-        totalPages: Math.ceil(total / limit),
-      });
     } catch (error) {
       res.status(500).send({ message: "Internal server error" });
     }
