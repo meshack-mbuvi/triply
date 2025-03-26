@@ -10,7 +10,7 @@ router.post("/", validate(tripSchema), asyncHandler(TripController.createTrip));
 
 router.get("/filter", asyncHandler(TripController.filterTrips));
 router.get("/", asyncHandler(TripController.getTrips));
-router.get("/:id", asyncHandler(TripController.getTrips));
+router.get("/:id", asyncHandler(TripController.getOneTrip));
 
 router.patch(
   "/:id",
