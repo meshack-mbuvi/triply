@@ -24,14 +24,14 @@
       v-if="trips.trips.length > 0"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10"
     >
-      <TripCard v-for="trip in paginatedTrips" :key="trip.id" :trip="trip" />
+      <TripCard v-for="trip in trips.trips" :key="trip.id" :trip="trip" />
     </div>
 
     <!-- Pagination -->
     <Pagination
-      v-if="trips.trips.length > itemsPerPage"
+      v-if="trips.total > itemsPerPage"
       :currentPage="currentPage"
-      :totalItems="trips.trips.length"
+      :totalPages="trips.totalPages"
       :itemsPerPage="itemsPerPage"
       @page-change="handlePageChange"
     />
@@ -46,7 +46,7 @@
 <script setup>
 import { useModalStore } from "@/stores/modalStore";
 import { useTripsStore } from "@/stores/tripStore";
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import Loader from "../ui/Loader.vue";
 import Pagination from "../ui/Pagination.vue";
 import TripCard from "./TripCard.vue";
@@ -57,16 +57,14 @@ const { openModal, isOpen } = useModalStore();
 const currentPage = ref(1);
 const itemsPerPage = 8;
 
-onMounted(() => {
-  getTrips();
+// Fetch trips when the component mounts
+onMounted(async () => {
+  await getTrips(currentPage.value, itemsPerPage);
 });
 
-const paginatedTrips = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  return trips.trips.slice(start, start + itemsPerPage);
-});
-
-const handlePageChange = (page) => {
+// Fetch trips when a new page is selected
+const handlePageChange = async (page) => {
   currentPage.value = page;
+  await getTrips(page, itemsPerPage);
 };
 </script>
