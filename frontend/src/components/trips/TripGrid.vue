@@ -62,7 +62,7 @@ const { openModal, isOpen } = useModalStore();
 
 const currentPage = ref(1);
 const itemsPerPage = 8;
-const sortOrder = ref("ASC"); // Default sorting: Descending order
+const sortOrder = ref("ASC"); // Default sorting: Ascending order
 
 // Fetch trips when the component mounts
 onMounted(async () => {
