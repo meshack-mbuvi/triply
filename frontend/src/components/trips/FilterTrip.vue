@@ -5,6 +5,7 @@
       v-model="localFilters.destination"
       class="rounded border border-gray-300 p-2"
       type="text"
+      placeholder="Destination"
     />
 
     <!-- Start Date -->
